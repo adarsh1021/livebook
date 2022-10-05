@@ -59,6 +59,12 @@ defmodule LivebookWeb.SessionLive.InsertButtonsComponent do
               <.remix_icon icon="organization-chart" />
               <span class="font-medium">Diagram</span>
             </button>
+            <%= live_patch to: Routes.session_path(@socket, :cell_upload, @session_id, @section_id, check_nil(@cell_id)),
+            class: "icon-button",
+            aria_label: "insert image",
+            role: "button" do %>
+              <.remix_icon icon="image-add-line" class="text-xl" />
+            <% end %>
           </:content>
         </.menu>
         <%= cond do %>
@@ -137,6 +143,14 @@ defmodule LivebookWeb.SessionLive.InsertButtonsComponent do
       <span class="font-medium"><%= @definition.name %></span>
     </button>
     """
+  end
+
+  defp check_nil(nil) do
+    ""
+  end
+
+  defp check_nil(a) do
+    a
   end
 
   defp on_smart_cell_click(%{requirement: nil} = definition, _variant_idx, section_id, cell_id) do

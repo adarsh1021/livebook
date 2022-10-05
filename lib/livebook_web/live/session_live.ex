@@ -335,7 +335,8 @@ defmodule LivebookWeb.SessionLive do
           id="cell-upload"
           session={@session}
           return_to={@self_path}
-          cell={@cell}
+          cell_id={@cell_id}
+          section_id={@section_id}
           uploads={@uploads}
         />
       </.modal>
@@ -665,9 +666,22 @@ defmodule LivebookWeb.SessionLive do
 
   @impl true
   def handle_params(%{"cell_id" => cell_id}, _url, socket)
-      when socket.assigns.live_action in [:cell_settings, :cell_upload] do
+      when socket.assigns.live_action in [:cell_settings] do
     {:ok, cell, _} = Notebook.fetch_cell_and_section(socket.private.data.notebook, cell_id)
     {:noreply, assign(socket, cell: cell)}
+  end
+
+  @impl true
+  def handle_params(%{"section_id" => section_id, "cell_id" => cell_id}, _url, socket)
+      when socket.assigns.live_action in [:cell_upload] do
+    # {:ok, cell, _} = Notebook.fetch_cell_and_section(socket.private.data.notebook, cell_id)
+    {:noreply, socket |> assign(cell_id: cell_id) |> assign(section_id: section_id)}
+  end
+
+  @impl true
+  def handle_params(%{"section_id" => section_id}, _url, socket)
+      when socket.assigns.live_action in [:cell_upload] do
+    {:noreply, socket |> assign(cell_id: nil) |> assign(section_id: section_id)}
   end
 
   def handle_params(%{"section_id" => section_id}, _url, socket)
@@ -748,6 +762,7 @@ defmodule LivebookWeb.SessionLive do
   end
 
   def handle_event("insert_cell_below", params, socket) do
+    IO.inspect(params)
     assert_policy!(socket, :edit)
     {type, attrs} = cell_type_and_attrs_from_params(params)
 

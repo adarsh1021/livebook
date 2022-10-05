@@ -372,7 +372,7 @@ defmodule LivebookWeb.SessionLive.CellComponent do
   defp insert_image_button(assigns) do
     ~H"""
     <span class="tooltip top" data-tooltip="Insert image" data-el-insert-image-button>
-      <%= live_patch to: Routes.session_path(@socket, :cell_upload, @session_id, @cell_id),
+      <%= live_patch to: Routes.session_path(@socket, :cell_upload, @session_id, "testing", "123"),
             class: "icon-button",
             aria_label: "insert image",
             role: "button" do %>
